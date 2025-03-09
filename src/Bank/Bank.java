@@ -1,5 +1,4 @@
 package Bank;
-
 import java.io.Serializable;
 import javax.swing.DefaultListModel;
 import Exceptions.AccNotFound;
@@ -8,81 +7,147 @@ import Exceptions.MaxBalance;
 import Exceptions.MaxWithdraw;
 
 public class Bank implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private static final int MAX_ACCOUNTS = 100;
-    private BankAccount[] accounts = new BankAccount[MAX_ACCOUNTS];
-    
-    public int addAccount(BankAccount acc) {
-        for (int i = 0; i < MAX_ACCOUNTS; i++) {
-            if (accounts[i] == null) {
-                accounts[i] = acc;
-                return i;
-            }
-        }
-        return -1; // Indicating that the bank is full
-    }
-    
-    public int addAccount(String name, double balance, double maxWithLimit) {
-        return addAccount(new SavingsAccount(name, balance, maxWithLimit));
-    }
-    
-    public int addAccount(String name, double balance, String tradeLicense) throws Exception {
-        return addAccount(new CurrentAccount(name, balance, tradeLicense));
-    }
-    
-    public int addAccount(String name, String institutionName, double balance, double minBalance) {
-        return addAccount(new StudentAccount(name, balance, institutionName));
-    }
-    
-    public BankAccount findAccount(String accountNum) {
-        for (BankAccount account : accounts) {
-            if (account != null && account.acc_num.equals(accountNum)) {
-                return account;
-            }
-        }
-        return null;
-    }
-    
-    public void deposit(String accountNum, double amount) throws InvalidAmount, AccNotFound {
-        if (amount <= 0) {
-            throw new InvalidAmount("Invalid deposit amount");
-        }
-        BankAccount account = findAccount(accountNum);
-        if (account == null) {
-            throw new AccNotFound("Account not found");
-        }
-        account.deposit(amount);
-    }
-    
-    public void withdraw(String accountNum, double amount) throws MaxBalance, AccNotFound, MaxWithdraw, InvalidAmount {
-        if (amount <= 0) {
-            throw new InvalidAmount("Invalid withdrawal amount");
-        }
-        BankAccount account = findAccount(accountNum);
-        if (account == null) {
-            throw new AccNotFound("Account not found");
-        }
-        if (amount > account.getbalance()) {
-            throw new MaxBalance("Insufficient balance");
-        }
-        account.withdraw(amount);
-    }
-    
-    public DefaultListModel<String> display() {
-        DefaultListModel<String> list = new DefaultListModel<>();
-        for (BankAccount account : accounts) {
-            if (account != null) {
-                list.addElement(account.toString());
-            }
-        }
-        return list;
-    }
-    
-    public BankAccount[] getAccounts() {
-        return accounts;
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private BankAccount[] accounts= new BankAccount[100];
+	public int addAccount(BankAccount acc)
+	{
+		int i=0;
+		for(i=0;i<100;i++)
+		{
+			if(getAccounts()[i]==null)
+			{
+				break;
+			}
+		}
+		getAccounts()[i]=acc;
+		return i;
+	}
+	
+	public int addAccount(String name, double balance, double maxWithLimit )
+	{
+		SavingsAccount acc=new SavingsAccount(name, balance, maxWithLimit);
+		return this.addAccount(acc);
+	}
+	
+	public int addAccount(String name, double balance, String tradeLicense) throws Exception
+	{
+		CurrentAccount acc = new CurrentAccount(name, balance,tradeLicense);
+		return this.addAccount(acc);
+	}
+	
+	public int addAccount(String name, String  institutionName, double balance, double min_balance)
+	{
+		StudentAccount acc= new StudentAccount(name,balance,institutionName);
+		return this.addAccount(acc);
+	}
+	
+	public BankAccount findAccount(String aacountNum)
+	{
+		int i;
+		for(i=0;i<100;i++)
+		{
+			if(getAccounts()[i]==null)
+			{
+				break;
+			}
+			if(getAccounts()[i].acc_num.equals(aacountNum))
+			{
+				return getAccounts()[i];
+			}
+			
+		}
+		return null;
+	}
+	
+	public void deposit(String aacountNum, double amt) throws InvalidAmount,AccNotFound
+	
+	{
+		if(amt<0)
+		{
+			throw new InvalidAmount("Invalid Deposit amount");
+		}
+		BankAccount temp=findAccount(aacountNum);
+		if(temp==null)
+		{
+			throw new AccNotFound("Account Not Found");
+		}
+		if(temp!=null)
+		{
+			temp.deposit(amt);
+			
+		}
+		
+	}
+	
+	
+	public void withdraw(String aacountNum, double amt) throws MaxBalance,AccNotFound, MaxWithdraw, InvalidAmount
+	{
+		BankAccount temp=findAccount(aacountNum);
+		
+		if(temp==null)
+		{
+			throw new AccNotFound("Account Not Found");
+		}
+		
+		if(amt<=0)
+		{
+			throw new InvalidAmount("Invalid Amount");
+		}
+		
+		if(amt>temp.getbalance())
+		{
+			throw new MaxBalance("Insufficient Balance");
+		}
+		if(temp!=null)
+		{
+			temp.withdraw(amt);
+		}
+	}
+	
+	public DefaultListModel<String> display()
+	{
+		DefaultListModel<String> list=new DefaultListModel<String>();
+		int i;
+//		String type=null;
+	
+		for(i=0;i<100;i++)
+		{
+			if(getAccounts()[i]==null)
+			{
+				break;
+			}
+//			if(getAccounts()[i].getClass().toString().equals("class Bank.SavingsAccount"))
+//			{
+//				type="Type: Savings Account";
+//			}
+//			
+//			else if(getAccounts()[i].getClass().toString().equals("class Bank.CurrentAccount"))
+//			{
+//				type="Type: Current Account";
+//			}
+//			
+//			else if(getAccounts()[i].getClass().toString().equals("class Bank.StudentAccount"))
+//			{
+//				type="Type: Student Account";
+//			}
+			
+			list.addElement(getAccounts()[i].toString());
+			
+			
+		}
+		
+		return list;
+	}
 
-    public void setAccounts(BankAccount[] accounts) {
-        this.accounts = accounts;
-    }
+	public BankAccount[] getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(BankAccount[] accounts) {
+		this.accounts = accounts;
+	}
+	
 }
